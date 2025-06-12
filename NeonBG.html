@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<style>
+  /* Background with dotted grid */
+  .dot-grid-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
+    background-image: radial-gradient(#222 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* Neon line falling */
+ /* .neon-line {
+    position: absolute;
+    width: 2px;
+    border-radius: 1px;
+    opacity: 0.6;
+    animation: fall 5s linear forwards;
+  }*/
+
+  /* @keyframes fall {
+    from {
+      transform: translateY(-100px);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+  } */
+</style>
+
+<!-- Background Container -->
+<body>
+  <div class="dot-grid-bg" id="dotGridBg"></div>
+
+</body>
+<script>
+  function createNeonLine() {
+    const line = document.createElement("div");
+    line.classList.add("neon-line");
+
+    // Gradient colors
+    // const colors = [
+    //   "linear-gradient(to top, #00ffe7, transparent)",
+    //   "linear-gradient(to top, #ff00ff, transparent)",
+    //   "linear-gradient(to top, #ffc107, transparent)",
+    //   "linear-gradient(to top, #1be7ff, transparent)",
+    //   "linear-gradient(to top, #ff6ec7, transparent)"
+    // ];
+    line.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+    // Align to dot grid lines
+    const colWidth = 20;
+    const totalCols = window.innerWidth / colWidth;
+    const randomCol = Math.floor(Math.random() * totalCols);
+    line.style.left = `${randomCol * colWidth + 9.5}px`; // Centered over dot
+
+    // Random height (30px to 70px)
+    const randomHeight = Math.floor(Math.random() * 40) + 30;
+    line.style.height = `${randomHeight}px`;
+
+    document.getElementById("dotGridBg").appendChild(line);
+
+    // Remove after animation
+    setTimeout(() => line.remove(), 5100);
+  }
+
+  // Generate 1–2 neon lines at random interval
+  setInterval(() => {
+    const count = Math.floor(Math.random() * 2) + 1;
+    for (let i = 0; i < count; i++) {
+      createNeonLine();
+    }
+  }, 1100);
+</script>
+
+</html>
