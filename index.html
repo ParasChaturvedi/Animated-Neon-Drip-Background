@@ -22,15 +22,15 @@
   }
 
   /* Neon line falling */
- /* .neon-line {
+  .neon-line {
     position: absolute;
     width: 2px;
     border-radius: 1px;
     opacity: 0.6;
-    animation: fall 5s linear forwards;
-  }*/
+    /* animation: fall 5s linear forwards; */
+  }
 
-  /* @keyframes fall {
+  @keyframes fall {
     from {
       transform: translateY(-100px);
       opacity: 1;
@@ -39,7 +39,7 @@
       transform: translateY(100vh);
       opacity: 0;
     }
-  } */
+  }
 </style>
 
 <!-- Background Container -->
@@ -53,13 +53,13 @@
     line.classList.add("neon-line");
 
     // Gradient colors
-    // const colors = [
-    //   "linear-gradient(to top, #00ffe7, transparent)",
-    //   "linear-gradient(to top, #ff00ff, transparent)",
-    //   "linear-gradient(to top, #ffc107, transparent)",
-    //   "linear-gradient(to top, #1be7ff, transparent)",
-    //   "linear-gradient(to top, #ff6ec7, transparent)"
-    // ];
+    const colors = [
+      "linear-gradient(to top, #00ffe7, transparent)",
+      "linear-gradient(to top, #ff00ff, transparent)",
+      "linear-gradient(to top, #ffc107, transparent)",
+      "linear-gradient(to top, #1be7ff, transparent)",
+      "linear-gradient(to top, #ff6ec7, transparent)"
+    ];
     line.style.background = colors[Math.floor(Math.random() * colors.length)];
 
     // Align to dot grid lines
