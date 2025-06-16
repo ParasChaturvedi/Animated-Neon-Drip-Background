@@ -1,58 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<style>
-  /* Background with dotted grid */
-  .dot-grid-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    width: 100vw;
-    height: 100vh;
-    background-color: #000;
-    background-image: radial-gradient(#222 1px, transparent 1px);
-    background-size: 20px 20px;
-    pointer-events: none;
-    overflow: hidden;
-  }
-
-  /* Neon line falling */
-  .neon-line {
-    position: absolute;
-    width: 2px;
-    border-radius: 1px;
-    opacity: 0.6;
-    animation: fall 5s linear forwards;
-  }
-
-  @keyframes fall {
-    from {
-      transform: translateY(-100px);
-      opacity: 1;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Neon Drips Full Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    to {
-      transform: translateY(100vh);
+
+    html, body {
+      background: #000;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Full page grid layer */
+    .dot-grid-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100%;
+      background-color: #000;
+      background-image: radial-gradient(#222 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+      z-index: 0;
+      overflow: visible;
+    }
+
+    .neon-line {
+      position: absolute;
+      width: 2px;
+      border-radius: 1px;
       opacity: 0;
+      animation-fill-mode: forwards;
     }
-  }
-</style>
 
-<!-- Background Container -->
+    .section {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      color: white;
+      position: relative;
+      z-index: 1;
+      background: transparent;
+    }
+  </style>
+</head>
 <body>
+
+  <!-- Neon Drip Background -->
   <div class="dot-grid-bg" id="dotGridBg"></div>
 
-</body>
-<script>
+  <!-- Example Sections -->
+  <div class="section">Section 1</div>
+  <div class="section">Section 2</div>
+  <div class="section">Section 3</div>
+  <div class="section">Section 4</div>
+  <div class="section">Section 5</div>
+
+  <script>
+  const grid = document.getElementById("dotGridBg");
+
+  function updateGridHeight() {
+    grid.style.height = document.body.scrollHeight + "px";
+  }
+
+  window.addEventListener("load", updateGridHeight);
+  window.addEventListener("resize", updateGridHeight);
+
   function createNeonLine() {
     const line = document.createElement("div");
     line.classList.add("neon-line");
 
-    // Gradient colors
     const colors = [
       "linear-gradient(to top, #00ffe7, transparent)",
       "linear-gradient(to top, #ff00ff, transparent)",
@@ -62,29 +88,63 @@
     ];
     line.style.background = colors[Math.floor(Math.random() * colors.length)];
 
-    // Align to dot grid lines
     const colWidth = 20;
-    const totalCols = window.innerWidth / colWidth;
+    const totalCols = Math.floor(window.innerWidth / colWidth);
     const randomCol = Math.floor(Math.random() * totalCols);
-    line.style.left = `${randomCol * colWidth + 9.5}px`; // Centered over dot
+    line.style.left = `${randomCol * colWidth + 9.5}px`;
 
-    // Random height (30px to 70px)
     const randomHeight = Math.floor(Math.random() * 40) + 30;
     line.style.height = `${randomHeight}px`;
+    line.style.top = "-100px";
 
-    document.getElementById("dotGridBg").appendChild(line);
+    const pageHeight = document.body.scrollHeight;
+    const fallDistance = pageHeight + 200;
 
-    // Remove after animation
-    setTimeout(() => line.remove(), 5100);
+    const animName = `fall-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+    const duration = fallDistance / 120;
+
+    const styleSheet = document.styleSheets[0];
+    const keyframes = `
+      @keyframes ${animName} {
+        0% { transform: translateY(0); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateY(${fallDistance}px); opacity: 0; }
+      }
+    `;
+    styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+
+    line.style.animationName = animName;
+    line.style.animationDuration = `${duration}s`;
+    line.style.animationTimingFunction = 'ease-in-out';
+
+    grid.appendChild(line);
+
+    setTimeout(() => {
+      line.remove();
+      for (let i = 0; i < styleSheet.cssRules.length; i++) {
+        if (styleSheet.cssRules[i].name === animName) {
+          styleSheet.deleteRule(i);
+          break;
+        }
+      }
+    }, duration * 1000 + 500);
   }
 
-  // Generate 1–2 neon lines at random interval
-  setInterval(() => {
-    const count = Math.floor(Math.random() * 2) + 1;
-    for (let i = 0; i < count; i++) {
-      createNeonLine();
-    }
-  }, 1100);
+  // First launch after 200ms, then every 3000ms
+  setTimeout(() => {
+    const dripInterval = () => {
+      const count = Math.floor(Math.random() * 3) + 1;
+      for (let i = 0; i < count; i++) {
+        createNeonLine();
+      }
+    };
+
+    dripInterval(); // First call at 200ms
+    setInterval(dripInterval, 3000); // Repeats every 3000ms
+  }, 100);
 </script>
 
+
+</body>
 </html>
